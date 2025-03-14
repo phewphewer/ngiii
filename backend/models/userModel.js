@@ -26,6 +26,7 @@ const userSchema = new Schema(
 
 // static create account method
 userSchema.statics.create_account = async function (username, email, password) {
+
     // validation
     if (!email || !password) {
         throw Error("All fields must be filled");
@@ -36,20 +37,22 @@ userSchema.statics.create_account = async function (username, email, password) {
     }
 
     if (!validator.isStrongPassword(password)) {
-        throw Error("Password not stronk enough");
+        throw Error("Password not strong enough");
     }
 
+// Check if Email exists
     const emailExists = await this.findOne({ email });
     if (emailExists) {
         throw Error("Email already in use");
     }
 
+// Check if username exists
     const usernameExists = await this.findOne({ username });
     if (usernameExists) {
         throw Error("Username already in use");
     }
 
-    // pass1234
+    // Old hashing method . .
     //   const salt = await bcrypt.genSalt(10);
     //   const hash = await bcrypt.hash(password, salt);
 
@@ -74,6 +77,7 @@ userSchema.statics.login = async function (email, password) {
     if (!match) {
         throw Error("Incorrect password");
     }
+
     return user;
 };
 
